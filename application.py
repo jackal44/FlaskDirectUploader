@@ -9,8 +9,10 @@
 
 from flask import Flask, render_template, request, redirect, url_for
 import os, json, boto3
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 
 # Listen for GET requests to yourdomain.com/account/
@@ -21,7 +23,7 @@ def account():
 
 
 # Listen for POST requests to yourdomain.com/submit_form/
-@app.route("/submit-form/", methods = ["POST"])
+@app.route("/submit-form/", methods = ["GET"])
 def submit_form():
   # Collect the data posted from the HTML form in account.html:
   username = request.form["username"]
@@ -29,11 +31,14 @@ def submit_form():
   avatar_url = request.form["avatar-url"]
 
   # Provide some procedure for storing the new details
-  update_account(username, full_name, avatar_url)
+  # update_account(username, full_name, avatar_url)
 
   # Redirect to the user's profile page, if appropriate
   return redirect(url_for('profile'))
 
+@app.route("/profile")
+def profile():
+  render_template("profile.html")
 
 # Listen for GET requests to yourdomain.com/sign_s3/
 #
