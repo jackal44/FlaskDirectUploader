@@ -14,7 +14,7 @@
 
   <h2>Your information</h2>
 
-  <form method="GET" action="/submit-form/">
+  <form method="POST" action="/submit-form/">
     <input type="hidden" id="avatar-url" name="avatar-url" value="/static/media/default.png">
     <input type="text" name="username" placeholder="Username"><br>
     <input type="text" name="full-name" placeholder="Full name"><br><br>
@@ -34,9 +34,8 @@
     function uploadFile(file, s3Data, url) {
       const xhr = new XMLHttpRequest();
       xhr.open('POST', s3Data.url, true);
-      xhr.withCredentials = true
       xhr.setRequestHeader('x-amz-acl', 'public-read');
-      xhr.setRequestHeader('Content-Type', 'application/json')
+      // xhr.setRequestHeader('Content-Type', 'application/json')
 
       const postData = new FormData();
       for (key in s3Data.fields) {

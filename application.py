@@ -23,7 +23,7 @@ def account():
 
 
 # Listen for POST requests to yourdomain.com/submit_form/
-@app.route("/submit-form/", methods = ["GET"])
+@app.route("/submit-form/", methods = ["POST"])
 def submit_form():
   # Collect the data posted from the HTML form in account.html:
   username = request.form["username"]
@@ -34,11 +34,9 @@ def submit_form():
   # update_account(username, full_name, avatar_url)
 
   # Redirect to the user's profile page, if appropriate
-  return redirect(url_for('profile'))
+  return render_template('profile.html')
 
-@app.route("/profile")
-def profile():
-  render_template("profile.html")
+
 
 # Listen for GET requests to yourdomain.com/sign_s3/
 #
