@@ -9,10 +9,9 @@
 
 from flask import Flask, render_template, request, redirect, url_for
 import os, json, boto3
-from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
+
 
 
 # Listen for GET requests to yourdomain.com/account/
