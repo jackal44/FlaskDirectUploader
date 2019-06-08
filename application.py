@@ -18,7 +18,7 @@ CORS(app)
 # Listen for GET requests to yourdomain.com/account/
 @app.route("/account/")
 def account():
-  # Show the account-edit HTML page:
+  # receive file, then pass it on
   return render_template('account.html')
 
 
@@ -42,6 +42,10 @@ def submit_form():
 #
 # Please see https://gist.github.com/RyanBalfanz/f07d827a4818fda0db81 for an example using
 # Python 3 for this view.
+@app.route("/upload")
+def gogo():
+  file=request.args.get('filename')
+
 @app.route('/sign-s3/')
 def sign_s3():
   # Load necessary information into the application
@@ -50,7 +54,6 @@ def sign_s3():
   # Load required data from the request
   file_name = request.args.get('file-name')
   file_type = request.args.get('file-type')
-
   # Initialise the S3 client
   s3 = boto3.client('s3')
 
