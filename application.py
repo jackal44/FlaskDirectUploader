@@ -49,22 +49,24 @@ def gogo():
 def sign_s3():
   # Load necessary information into the application
   S3_BUCKET = os.environ.get('S3_BUCKET')
+  S3_ACCESS_KEY_ID=os.environ.get('AWS_ACCESS_KEY_ID')
+  AWS_SECRET_ACCESS_KEY=os.environ.get('AWS_SECRET_ACCESS_KEY')
+  
 
   # Load required data from the request
   file_name = request.args.get('file-name')
   file_type = request.args.get('file-type')
   # Initialise the S3 client
-  s3 = boto3.client('s3')
+  s3 = boto3.client(
+    's3',
+    aws_access_key_id=S3_ACCESS_KEY_ID,
+    aws_secret_access_key=AWS_SECRET_ACCESS_KEY
+  )
 
   # Generate and return the presigned URL
   presigned_post = s3.generate_presigned_post(
     Bucket = S3_BUCKET,
     Key = file_name,
-    Fields = {"acl": "public-read", "Content-Type": file_type},
-    Conditions = [
-      {"acl": "public-read"},
-      {"Content-Type": file_type}
-    ],
     ExpiresIn = 3600
   )
 
