@@ -1,9 +1,14 @@
 <html>
 <heaad>
+  <link>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/dropzone.js"></script>
+  <link rel="stylesheet" href="https:/cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/dropzone.css" />
 </heaad>
 
 <body>
+
+
 
   <h1>Edit your account</h1>
 
@@ -11,10 +16,12 @@
 
   <h2>Your avatar</h2>
 
-  <input type="file" multiple id="file-input">
+  <input type="file" multiple id="file-input" text="hello">
+
+
   <p id="status">Please select a file</p>
 
-  <form method="POST" action="/submit-form/">
+  <form method="POST" action="/submit-form/" class>
     <input type="hidden" id="avatar-url" name="avatar-url" value="/static/media/default.png">
     <progress id="progress"></progress>
     <p id="message"></p>
@@ -24,33 +31,41 @@
     <input type="submit" value="Update profile">
   </form>
 
+  <!-- <form action="/submit-form" class="dropzone" id="dropzoneForm">
+    <div class="fallback">
+      <input id="file-input" name="file" type="file" multiple />
+    </div>
+  </form> -->
+
   <script type="text/javascript">
+
+
 
     // unable to change it to ajax
     // function uploadFile(file, s3Data, url) {
-    //   const postData = new FormData()
-    //   for (key in s3Data.fields) {
-    //     postData.append(key, s3Data.fields[key])
-    //   }
-    //   postData.append('file', file)
-    //   debugger
+    // const postData = new FormData()
+    // for (key in s3Data.fields) {
+    // postData.append(key, s3Data.fields[key])
+    // }
+    // postData.append('file', file)
+    // debugger
 
-    //   $.ajax({
-    //     type: 'POST',
-    //     url: s3Data.url,
-    //     data: postData,
-    //     success: function (data) {
-    //       debugger
-    //       alert(data)
-    //       document.getElementById('preview').src = url;
-    //       ('#avatar-url').value = url;
-    //     },
-    //     error: function (error) {
-    //       alert(error)
+    // $.ajax({
+    // type: 'POST',
+    // url: s3Data.url,
+    // data: postData,
+    // success: function (data) {
+    // debugger
+    // alert(data)
+    // document.getElementById('preview').src = url;
+    // ('#avatar-url').value = url;
+    // },
+    // error: function (error) {
+    // alert(error)
 
-    //     }
+    // }
 
-    //   })
+    // })
     // }
     function uploadFile(file, s3Data, url) {
 
@@ -61,9 +76,8 @@
           postData.append(key, s3Data.fields[key]);
         }
         postData.append('file', file);
+        progress = document.getElementById('progress')
         const xhr = new XMLHttpRequest();
-        let progress = document.getElementById('progress')
-        let message = document.getElementById('message')
         xhr.upload.onloadstart = function (e) {
           progress.value = 0
           progress.max = e.total
@@ -81,7 +95,9 @@
         xhr.onreadystatechange = () => {
           if (xhr.readyState === 4) {
             if (xhr.status === 200 || xhr.status === 204) {
-              return
+              let text = file.name + " has been uploaded!\n"
+              message.append(text + "\n")
+
             }
             else {
               alert('Could not upload file.');
@@ -94,9 +110,9 @@
 
 
     /*
-      Function to get the temporary signed request from the Python app.
-      If request successful, continue to upload the file using this signed
-      request.
+    Function to get the temporary signed request from the Python app.
+    If request successful, continue to upload the file using this signed
+    request.
     */
     function getSignedRequest(file) {
       $.ajax({
@@ -113,9 +129,10 @@
     }
 
     /*
-       Function called when file input updated. If there is a file selected, then
-       start upload procedure by asking for a signed request from the app.
+    Function called when file input updated. If there is a file selected, then
+    start upload procedure by asking for a signed request from the app.
     */
+
     function initUpload() {
       const files = document.getElementById('file-input').files;
       const file = files
@@ -133,6 +150,7 @@
     (() => {
       document.getElementById('file-input').onchange = initUpload;
     })();
+
 
   </script>
 </body>
