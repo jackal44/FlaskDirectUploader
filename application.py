@@ -9,12 +9,18 @@
 
 from flask import Flask, render_template, request, redirect, url_for
 import os, json, boto3, botocore
+from boto3.s3.transfer import S3Transfer
+from botocore.exceptions import ClientError
+
 
 
 app = Flask(__name__)
 
 
 # Load necessary information into the application
+
+client=boto3.client('s3','ap-southeast-1')
+transfer =S3Transfer(client)
 S3_BUCKET = os.environ.get('S3_BUCKET')
 S3_ACCESS_KEY_ID=os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY=os.environ.get('AWS_SECRET_ACCESS_KEY')
@@ -49,11 +55,12 @@ def show():
 
 @app.route('/download/<object>')
 def download(object):
-  file=os.getcwd()+"\\"+object
   service=boto3.resource('s3')
+  file=os.getcwd()+"\\"+object
   try:
-    r=service.Bucket(S3_BUCKET).download_file(object, file)
-  except botocore.exceptions.Client as e:
+    progress=ProgressPercentage(transfer._manager._client,S3_BUCKET, r'file')
+    transfer.download_file(S3_BUCKET,object, r'file', callback=progress)
+  except botocore.exceptions.ClientError as e:
     if e.response['Error']['Code'] == "404":
       alert("The object does not exist.")
     else:
@@ -78,6 +85,21 @@ def sign_s3():
     'url': 'https://%s.s3.amazonaws.com/%s' % (S3_BUCKET, file_name)
   })
 
+
+class ProgressPercentage(object):
+  def __init__(self, client, bucket, filename):
+    self._filename=filename
+    self._size=float(os.path.getsize(filename))
+    self._seen_so_far =0
+    self._lock = threading.Lock()
+    self._size=client.head_object(Bucket=S3_BUCKET, key=filename).ContentLength
+
+  def __call__(self, bytes_amount):
+    with self._lock:
+      self._seen_so_far+=bytes_amount
+      percentage=(self._seen_so_far/self.size)*100
+      LoggingFile('{} is the filename, {} out of {} done. The percentage completed is {} %'.format(str(self._filename), str(self._seen_so_far), str(self._size), str(percentage)))
+      sys.stdout.flush()
 
 if __name__ == '__main__':
   port = int(os.environ.get('PORT', 5000))
