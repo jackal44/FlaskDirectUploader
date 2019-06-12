@@ -8,8 +8,6 @@
 
 <body>
 
-
-
   <h1>Edit your account</h1>
 
   <hr>
@@ -21,17 +19,17 @@
 
   <p id="status">Please select a file</p>
 
-  <form method="POST" action="/submit-form/" class>
+  <form action="{{url_for('show')}}">
     <input type="hidden" id="avatar-url" name="avatar-url" value="/static/media/default.png">
     <progress id="progress"></progress>
     <p id="message"></p>
     <hr>
     <h2>Save changes</h2>
 
-    <input type="submit" value="Update profile">
+    <input type="submit" value="Show files">
   </form>
-
-  <!-- <form action="/submit-form" class="dropzone" id="dropzoneForm">
+  <!-- 
+  <form action="/submit-form" class="dropzone" id="dropzoneForm">
     <div class="fallback">
       <input id="file-input" name="file" type="file" multiple />
     </div>
@@ -70,22 +68,26 @@
     function uploadFile(file, s3Data, url) {
 
       start_loading();
+
       function start_loading() {
         const postData = new FormData();
         for (key in s3Data.fields) {
           postData.append(key, s3Data.fields[key]);
         }
         postData.append('file', file);
-        progress = document.getElementById('progress')
         const xhr = new XMLHttpRequest();
         xhr.upload.onloadstart = function (e) {
-          progress.value = 0
-          progress.max = e.total
+          $("#progress").attr({
+            "value": 0,
+            "max": e.total
+          })
         }
         xhr.upload.onprogress = function (e) {
           if (e.lengthComputable) {
-            progress.value = e.loaded
-            progress.max = e.total
+            $("#progress").attr({
+              "value": e.loaded,
+              "max": e.total
+            })
           }
         }
         xhr.upload.onloadend = function (e) {
@@ -133,6 +135,10 @@
     start upload procedure by asking for a signed request from the app.
     */
 
+
+    // let Dropzone = new Dropzone("#file-input"){
+
+    // }
     function initUpload() {
       const files = document.getElementById('file-input').files;
       const file = files
