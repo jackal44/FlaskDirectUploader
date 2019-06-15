@@ -6,16 +6,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    {{fujs.js}}
 </head>
 
 <body>
+    <div id="parent">
+        {%for i in keys%}
+        <input type="checkbox" name="download" value={{i}}> {{i}}</br>
+        {%endfor%}
+    </div>
+    <button id="download">
+        Download
+    </button>
 
-    {%for i in keys%}
-    <a href="{{url_for('download', object=i)}}">
-        <h1>{{i}}</h1>
-    </a>
+    <script>
+        let files = []
+        $('#parent').click(function (e) {
+            files.push(e.target.value)
+            console.log(files)
+        })
 
-    {%endfor%}
+        $("#download").click(function () {
+            for (file of files) {
+                $.ajax({
+                    type: 'GET',
+                    url: `/download?object=${file}`,
+                    success: function (data) {
+                        return false
+                    },
+                    error: function (err) {
+                        return false
+                    }
+
+                })
+            }
+        })
+
+        function getSignedRequest(file) {
+            $.ajax({
+                type: 'GET',
+                url: `/sign-s3?file-name=${file.name}&file-type=${file.type}`,
+                success: function (data) {
+                    response = JSON.parse(data)
+                    uploadFile(file, response.data, response.url)
+                },
+                error: function (err) {
+                    alert(err)
+                }
+            })
+        }
+    </script>
+
 </body>
 
 </html>
