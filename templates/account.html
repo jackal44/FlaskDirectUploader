@@ -9,14 +9,10 @@
 <body>
 
   <h1>Edit your account</h1>
-
   <hr>
-
   <h2>Your avatar</h2>
 
   <input type="file" multiple id="file-input" text="hello">
-
-
   <p id="status">Please select a file</p>
 
   <form action="{{url_for('show')}}">
@@ -28,7 +24,8 @@
 
     <input type="submit" value="Show files">
   </form>
-  <!-- 
+
+  <!-- dropzone
   <form action="/submit-form" class="dropzone" id="dropzoneForm">
     <div class="fallback">
       <input id="file-input" name="file" type="file" multiple />
@@ -37,38 +34,8 @@
 
   <script type="text/javascript">
 
-
-
-    // unable to change it to ajax
-    // function uploadFile(file, s3Data, url) {
-    // const postData = new FormData()
-    // for (key in s3Data.fields) {
-    // postData.append(key, s3Data.fields[key])
-    // }
-    // postData.append('file', file)
-    // debugger
-
-    // $.ajax({
-    // type: 'POST',
-    // url: s3Data.url,
-    // data: postData,
-    // success: function (data) {
-    // debugger
-    // alert(data)
-    // document.getElementById('preview').src = url;
-    // ('#avatar-url').value = url;
-    // },
-    // error: function (error) {
-    // alert(error)
-
-    // }
-
-    // })
-    // }
     function uploadFile(file, s3Data, url) {
-
       start_loading();
-
       function start_loading() {
         const postData = new FormData();
         for (key in s3Data.fields) {
@@ -99,7 +66,6 @@
             if (xhr.status === 200 || xhr.status === 204) {
               let text = file.name + " has been uploaded!\n"
               message.append(text + "\n")
-
             }
             else {
               alert('Could not upload file.');
@@ -110,12 +76,6 @@
       }
     }
 
-
-    /*
-    Function to get the temporary signed request from the Python app.
-    If request successful, continue to upload the file using this signed
-    request.
-    */
     function getSignedRequest(file) {
       $.ajax({
         type: 'GET',
@@ -130,15 +90,20 @@
       })
     }
 
-    /*
-    Function called when file input updated. If there is a file selected, then
-    start upload procedure by asking for a signed request from the app.
-    */
-
-
-    // let Dropzone = new Dropzone("#file-input"){
+    // Dropzone = new Dropzone('#dropzoneForm')
+    // Dropzone.options.autoprocessQueue = false
+    // Dropzone.options.init = function () {
+    //   Dropzone.on("drop", function () {
+    //     console.log("I am here")
+    //     debugger
+    //   })
 
     // }
+
+    // Dropzone.options.on("drop")
+
+
+
     function initUpload() {
       const files = document.getElementById('file-input').files;
       const file = files
@@ -149,6 +114,8 @@
         getSignedRequest(file[i]);
       }
     }
+
+
 
     /*
        Bind listeners when the page loads.

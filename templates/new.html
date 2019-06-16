@@ -43,19 +43,6 @@
             }
         })
 
-        function getSignedRequest(file) {
-            $.ajax({
-                type: 'GET',
-                url: `/sign-s3?file-name=${file.name}&file-type=${file.type}`,
-                success: function (data) {
-                    response = JSON.parse(data)
-                    uploadFile(file, response.data, response.url)
-                },
-                error: function (err) {
-                    alert(err)
-                }
-            })
-        }
     </script>
 
 </body>
