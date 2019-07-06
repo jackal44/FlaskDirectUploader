@@ -7,18 +7,18 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-    {{fujs.js}}
 </head>
 
 <body>
     <div id="parent">
         {%for i in keys%}
-        <input type="checkbox" name="download" value={{i}}> {{i}}</br>
+        <input type="checkbox" class="checkbox" name="download" value={{i}}> {{i}}</br>
         {%endfor%}
     </div>
     <button id="download">
         Download
     </button>
+    <a href="{{url_for('account')}}">homepage</a>
 
     <script>
         let files = []
@@ -33,6 +33,7 @@
                     type: 'GET',
                     url: `/download?object=${file}`,
                     success: function (data) {
+                        $('.checkbox').prop('checked', false)
                         return false
                     },
                     error: function (err) {

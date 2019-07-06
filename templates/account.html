@@ -25,14 +25,9 @@
     <input type="submit" value="Show files">
   </form>
 
-  <!-- dropzone
-  <form action="/submit-form" class="dropzone" id="dropzoneForm">
-    <div class="fallback">
-      <input id="file-input" name="file" type="file" multiple />
-    </div>
-  </form> -->
-
   <script type="text/javascript">
+
+    let count = 0
 
     function uploadFile(file, s3Data, url) {
       start_loading();
@@ -64,8 +59,8 @@
         xhr.onreadystatechange = () => {
           if (xhr.readyState === 4) {
             if (xhr.status === 200 || xhr.status === 204) {
-              let text = file.name + " has been uploaded!\n"
-              message.append(text + "\n")
+              count += 1
+              $("#message").html(count + " file has been uploaded!")
             }
             else {
               alert('Could not upload file.');
@@ -90,20 +85,6 @@
       })
     }
 
-    // Dropzone = new Dropzone('#dropzoneForm')
-    // Dropzone.options.autoprocessQueue = false
-    // Dropzone.options.init = function () {
-    //   Dropzone.on("drop", function () {
-    //     console.log("I am here")
-    //     debugger
-    //   })
-
-    // }
-
-    // Dropzone.options.on("drop")
-
-
-
     function initUpload() {
       const files = document.getElementById('file-input').files;
       const file = files
@@ -115,15 +96,9 @@
       }
     }
 
-
-
-    /*
-       Bind listeners when the page loads.
-    */
     (() => {
       document.getElementById('file-input').onchange = initUpload;
     })();
-
 
   </script>
 </body>
